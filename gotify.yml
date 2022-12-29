@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/part-of: gotify
+    app.kubernetes.io/instance: gotify
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+  name: gotify
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gotify
+  labels: &gotify_labels
+    app.kubernetes.io/part-of: gotify
+    app.kubernetes.io/instance: gotify
+spec:
+  replicas: 1
+  selector:
+    matchLabels: *gotify_labels
+  template:
+    metadata:
+      labels: *gotify_labels
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: gotify
+        image: quay.io/simbelmas/gotify:latest
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: gotify-data
+          mountPath: "/app/data"
+        - name: gotify-config
+          mountPath: "/etc/gotify"
+        ports:
+        - containerPort: 8080
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
+      volumes:
+      - name: gotify-data
+        persistentVolumeClaim:
+          claimName: data
+      - name: gotify-config
+        secret:
+          secretName: gotify-config
+          optional: false
