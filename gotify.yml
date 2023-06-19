@@ -32,7 +32,7 @@ spec:
       containers:
       - name: gotify
         image: quay.io/simbelmas/gotify:stable
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         volumeMounts:
         - name: gotify-data
           mountPath: "/app/data"
