@@ -10,6 +10,7 @@ resources:
 - pvc.yml
 - service.yml
 
-secretgenerator:
+
+secretGenerator:
 - name: gotify-config
   type: Opaque
