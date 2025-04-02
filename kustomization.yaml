@@ -14,3 +14,7 @@ resources:
 secretGenerator:
 - name: gotify-config
   type: Opaque
+
+images:
+- name: quay.io/simbelmas/gotify
+  newTag: v0.106
